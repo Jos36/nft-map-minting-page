@@ -76,8 +76,24 @@ function grid() {
 
     if (selectedCategory == "1" || selectedCategory == "ALL") {
       var mousePos = e.target.__data__;
+
       minted.forEach((el) => {
-        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
+        if (el[0] == x && el[1] == y) {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+          style="
+            margin-top: 80%;
+            border: #21fe91 1px solid;
+            border-radius: 10px;
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+            margin-left: 10vw;
+          "
+        >
+          (${x}, ${y}) is already minted
+        </h4>`;
+        } else {
           jQuery("#view-lands-button").hide();
 
           resetSelections();
@@ -111,21 +127,6 @@ function grid() {
                 coordinates: [x, y],
               });
             });
-        } else {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `  <h4
-          style="
-            margin-top: 80%;
-            border: #21fe91 1px solid;
-            border-radius: 10px;
-            padding: 20px;
-            width: 400px;
-            text-align: center;
-            margin-left: 10vw;
-          "
-        >
-          (${x}, ${y}) is already minted
-        </h4>`;
         }
       });
     }
@@ -142,7 +143,22 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       minted.forEach((el) => {
-        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
+        if (el[0] == x && el[1] == y) {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+        style="
+          margin-top: 80%;
+          border: #21fe91 1px solid;
+          border-radius: 10px;
+          padding: 20px;
+          width: 400px;
+          text-align: center;
+          margin-left: 10vw;
+        "
+      >
+        (${x}, ${y}) is already minted
+      </h4>`;
+        } else {
           jQuery("#view-lands-button").show();
 
           resetSelections();
@@ -174,21 +190,6 @@ function grid() {
                 coordinates: [x, y],
               });
             });
-        } else {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `  <h4
-        style="
-          margin-top: 80%;
-          border: #21fe91 1px solid;
-          border-radius: 10px;
-          padding: 20px;
-          width: 400px;
-          text-align: center;
-          margin-left: 10vw;
-        "
-      >
-        (${x}, ${y}) is already minted
-      </h4>`;
         }
       });
     } else if (
@@ -196,9 +197,23 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       minted.forEach((el) => {
-        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
+        if (el[0] == x && el[1] == y) {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+        style="
+          margin-top: 80%;
+          border: #21fe91 1px solid;
+          border-radius: 10px;
+          padding: 20px;
+          width: 400px;
+          text-align: center;
+          margin-left: 10vw;
+        "
+      >
+        (${x}, ${y}) is already minted
+      </h4>`;
+        } else {
           jQuery("#view-lands-button").show();
-          isLoggedIn();
 
           resetSelections();
           d3.select(
@@ -229,7 +244,14 @@ function grid() {
                 coordinates: [x, y],
               });
             });
-        } else {
+        }
+      });
+    } else if (
+      (selectedCategory == "6" && state[`${x},${y}`].length == 36) ||
+      selectedCategory == "ALL"
+    ) {
+      minted.forEach((el) => {
+        if (el[0] == x && el[1] == y) {
           const landInfo = document.getElementById("landInfo");
           landInfo.innerHTML = `  <h4
         style="
@@ -244,16 +266,8 @@ function grid() {
       >
         (${x}, ${y}) is already minted
       </h4>`;
-        }
-      });
-    } else if (
-      (selectedCategory == "6" && state[`${x},${y}`].length == 36) ||
-      selectedCategory == "ALL"
-    ) {
-      minted.forEach((el) => {
-        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
+        } else {
           jQuery("#view-lands-button").show();
-          isLoggedIn();
 
           resetSelections();
           d3.select(
@@ -266,15 +280,15 @@ function grid() {
             .then((data) => {
               const landInfo = document.getElementById("landInfo");
               landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
-       border-radius: 10px;
-       background-color: #21fe91;
-       color: #23292f;
-       border: none;
-       padding :10px;
-       padding-left: 20px;
-       padding-right: 20px;
-       font-weight:bold;
-       ">Mint</button></div>`;
+        border-radius: 10px;
+        background-color: #21fe91;
+        color: #23292f;
+        border: none;
+        padding :10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight:bold;
+        ">Mint</button></div>`;
             })
             .then(() => {
               console.log(CoordToLandsId[`${x},${y}`]);
@@ -284,21 +298,6 @@ function grid() {
                 coordinates: [x, y],
               });
             });
-        } else {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `  <h4
-        style="
-          margin-top: 80%;
-          border: #21fe91 1px solid;
-          border-radius: 10px;
-          padding: 20px;
-          width: 400px;
-          text-align: center;
-          margin-left: 10vw;
-        "
-      >
-        (${x}, ${y}) is already minted
-      </h4>`;
         }
       });
     }
@@ -499,7 +498,11 @@ function grid() {
     const getminted = () => {
       getMintedLands()
         .then((data) => {
-          minted = data;
+          if (data.length === 0) {
+            minted = [["i", "i"]];
+          } else {
+            minted = data;
+          }
         })
         .then(() => {
           console.log(minted);
