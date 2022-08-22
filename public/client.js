@@ -77,7 +77,7 @@ function grid() {
     if (selectedCategory == "1" || selectedCategory == "ALL") {
       var mousePos = e.target.__data__;
       minted.forEach((el) => {
-        if (el[0] != x && el[1] != y) {
+        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
           jQuery("#view-lands-button").hide();
 
           resetSelections();
@@ -142,7 +142,7 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       minted.forEach((el) => {
-        if (el[0] != x && el[1] != y) {
+        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
           jQuery("#view-lands-button").show();
 
           resetSelections();
@@ -196,7 +196,7 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       minted.forEach((el) => {
-        if (el[0] != x && el[1] != y) {
+        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
           jQuery("#view-lands-button").show();
           isLoggedIn();
 
@@ -251,7 +251,7 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       minted.forEach((el) => {
-        if (el[0] != x && el[1] != y) {
+        if ((el[0] != x && el[1] != y) || el[0] != undefined) {
           jQuery("#view-lands-button").show();
           isLoggedIn();
 
