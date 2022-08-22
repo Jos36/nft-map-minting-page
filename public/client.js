@@ -76,22 +76,23 @@ function grid() {
 
     if (selectedCategory == "1" || selectedCategory == "ALL") {
       var mousePos = e.target.__data__;
+      minted.forEach((el) => {
+        if (el[0] != x && el[1] != y) {
+          jQuery("#view-lands-button").hide();
 
-      jQuery("#view-lands-button").hide();
+          resetSelections();
+          d3.select(
+            e.target.textContent !== ""
+              ? e.target.parentNode.children[0]
+              : rects.filter((d, i) => d.x === x * 100 && d.y === y * 100)
+                  ._groups[0][0]
+          ).style("fill", "#FF69B4");
 
-      resetSelections();
-      d3.select(
-        e.target.textContent !== ""
-          ? e.target.parentNode.children[0]
-          : rects.filter((d, i) => d.x === x * 100 && d.y === y * 100)
-              ._groups[0][0]
-      ).style("fill", "#FF69B4");
-
-      const token_id = CoordToLandsId[`${x},${y}`];
-      getMetadata(token_id)
-        .then((data) => {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+          const token_id = CoordToLandsId[`${x},${y}`];
+          getMetadata(token_id)
+            .then((data) => {
+              const landInfo = document.getElementById("landInfo");
+              landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
         border-radius: 10px;
         background-color: #21fe91;
         color: #23292f;
@@ -101,15 +102,32 @@ function grid() {
         padding-right: 20px;
         font-weight:bold;
         ">Mint</button></div>`;
-        })
-        .then(() => {
-          console.log(CoordToLandsId[`${x},${y}`]);
-          const mintBtn = document.getElementById("mint-btn");
-          mint(mintBtn, {
-            token_id,
-            coordinates: [x, y],
-          });
-        });
+            })
+            .then(() => {
+              console.log(CoordToLandsId[`${x},${y}`]);
+              const mintBtn = document.getElementById("mint-btn");
+              mint(mintBtn, {
+                token_id,
+                coordinates: [x, y],
+              });
+            });
+        } else {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+          style="
+            margin-top: 80%;
+            border: #21fe91 1px solid;
+            border-radius: 10px;
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+            margin-left: 10vw;
+          "
+        >
+          (${x}, ${y}) is already minted
+        </h4>`;
+        }
+      });
     }
   };
 
@@ -117,24 +135,27 @@ function grid() {
     e.preventDefault();
     e.stopPropagation();
     const [x, y] = e.target.__data__;
+    const token_id = CoordToLandsId[`${x},${y}`];
+
     if (
       (selectedCategory == "24" && state[`${x},${y}`].length == 576) ||
       selectedCategory == "ALL"
     ) {
-      jQuery("#view-lands-button").show();
+      minted.forEach((el) => {
+        if (el[0] != x && el[1] != y) {
+          jQuery("#view-lands-button").show();
 
-      resetSelections();
-      d3.select(
-        e.target.textContent !== ""
-          ? e.target.parentNode.children[0]
-          : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
-      ).style("stroke", "#FF69B4");
+          resetSelections();
+          d3.select(
+            e.target.textContent !== ""
+              ? e.target.parentNode.children[0]
+              : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
+          ).style("stroke", "#FF69B4");
 
-      const token_id = CoordToLandsId[`${x},${y}`];
-      getMetadata(token_id)
-        .then((data) => {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+          getMetadata(token_id)
+            .then((data) => {
+              const landInfo = document.getElementById("landInfo");
+              landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
         border-radius: 10px;
         background-color: #21fe91;
         color: #23292f;
@@ -144,34 +165,52 @@ function grid() {
         padding-right: 20px;
         font-weight:bold;
         ">Mint</button></div>`;
-        })
-        .then(() => {
-          console.log(CoordToLandsId[`${x},${y}`]);
-          const mintBtn = document.getElementById("mint-btn");
-          mint(mintBtn, {
-            token_id,
-            coordinates: [x, y],
-          });
-        });
+            })
+            .then(() => {
+              console.log(CoordToLandsId[`${x},${y}`]);
+              const mintBtn = document.getElementById("mint-btn");
+              mint(mintBtn, {
+                token_id,
+                coordinates: [x, y],
+              });
+            });
+        } else {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+        style="
+          margin-top: 80%;
+          border: #21fe91 1px solid;
+          border-radius: 10px;
+          padding: 20px;
+          width: 400px;
+          text-align: center;
+          margin-left: 10vw;
+        "
+      >
+        (${x}, ${y}) is already minted
+      </h4>`;
+        }
+      });
     } else if (
       (selectedCategory == "12" && state[`${x},${y}`].length == 144) ||
       selectedCategory == "ALL"
     ) {
-      jQuery("#view-lands-button").show();
-      isLoggedIn();
+      minted.forEach((el) => {
+        if (el[0] != x && el[1] != y) {
+          jQuery("#view-lands-button").show();
+          isLoggedIn();
 
-      resetSelections();
-      d3.select(
-        e.target.textContent !== ""
-          ? e.target.parentNode.children[0]
-          : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
-      ).style("stroke", "#FF69B4");
+          resetSelections();
+          d3.select(
+            e.target.textContent !== ""
+              ? e.target.parentNode.children[0]
+              : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
+          ).style("stroke", "#FF69B4");
 
-      const token_id = CoordToLandsId[`${x},${y}`];
-      getMetadata(token_id)
-        .then((data) => {
-          const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+          getMetadata(token_id)
+            .then((data) => {
+              const landInfo = document.getElementById("landInfo");
+              landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
         border-radius: 10px;
         background-color: #21fe91;
         color: #23292f;
@@ -181,52 +220,87 @@ function grid() {
         padding-right: 20px;
         font-weight:bold;
         ">Mint</button></div>`;
-        })
-        .then(() => {
-          console.log(CoordToLandsId[`${x},${y}`]);
-          const mintBtn = document.getElementById("mint-btn");
-          mint(mintBtn, {
-            token_id,
-            coordinates: [x, y],
-          });
-        });
+            })
+            .then(() => {
+              console.log(CoordToLandsId[`${x},${y}`]);
+              const mintBtn = document.getElementById("mint-btn");
+              mint(mintBtn, {
+                token_id,
+                coordinates: [x, y],
+              });
+            });
+        } else {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `  <h4
+        style="
+          margin-top: 80%;
+          border: #21fe91 1px solid;
+          border-radius: 10px;
+          padding: 20px;
+          width: 400px;
+          text-align: center;
+          margin-left: 10vw;
+        "
+      >
+        (${x}, ${y}) is already minted
+      </h4>`;
+        }
+      });
     } else if (
       (selectedCategory == "6" && state[`${x},${y}`].length == 36) ||
       selectedCategory == "ALL"
     ) {
-      jQuery("#view-lands-button").show();
-      isLoggedIn();
+      minted.forEach((el) => {
+        if (el[0] != x && el[1] != y) {
+          jQuery("#view-lands-button").show();
+          isLoggedIn();
 
-      resetSelections();
-      d3.select(
-        e.target.textContent !== ""
-          ? e.target.parentNode.children[0]
-          : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
-      ).style("stroke", "#FF69B4");
+          resetSelections();
+          d3.select(
+            e.target.textContent !== ""
+              ? e.target.parentNode.children[0]
+              : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
+          ).style("stroke", "#FF69B4");
 
-      const token_id = CoordToLandsId[`${x},${y}`];
-      getMetadata(token_id)
-        .then((data) => {
+          getMetadata(token_id)
+            .then((data) => {
+              const landInfo = document.getElementById("landInfo");
+              landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+       border-radius: 10px;
+       background-color: #21fe91;
+       color: #23292f;
+       border: none;
+       padding :10px;
+       padding-left: 20px;
+       padding-right: 20px;
+       font-weight:bold;
+       ">Mint</button></div>`;
+            })
+            .then(() => {
+              console.log(CoordToLandsId[`${x},${y}`]);
+              const mintBtn = document.getElementById("mint-btn");
+              mint(mintBtn, {
+                token_id,
+                coordinates: [x, y],
+              });
+            });
+        } else {
           const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
-        border-radius: 10px;
-        background-color: #21fe91;
-        color: #23292f;
-        border: none;
-        padding :10px;
-        padding-left: 20px;
-        padding-right: 20px;
-        font-weight:bold;
-        ">Mint</button></div>`;
-        })
-        .then(() => {
-          console.log(CoordToLandsId[`${x},${y}`]);
-          const mintBtn = document.getElementById("mint-btn");
-          mint(mintBtn, {
-            token_id,
-            coordinates: [x, y],
-          });
-        });
+          landInfo.innerHTML = `  <h4
+        style="
+          margin-top: 80%;
+          border: #21fe91 1px solid;
+          border-radius: 10px;
+          padding: 20px;
+          width: 400px;
+          text-align: center;
+          margin-left: 10vw;
+        "
+      >
+        (${x}, ${y}) is already minted
+      </h4>`;
+        }
+      });
     }
   };
 
