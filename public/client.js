@@ -202,7 +202,7 @@ function grid() {
       getMetadata(token_id)
         .then((data) => {
           const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <div style="display:flex"><p>name: </p><p>${data.name}</p></div> <button id="mint-btn" style="
+          landInfo.innerHTML = `<div style="margin-left:50px;"><p>Coordinates: (${x}, ${y})</p> <div style="display:flex"><p style="margin-right: 10px;">name: </p><p>${data.name}</p></div> <button id="mint-btn" style="
         border-radius: 10px;
         background-color: #21fe91;
         color: #23292f;

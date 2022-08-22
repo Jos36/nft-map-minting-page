@@ -224,11 +224,12 @@ export let mint = async (element, landOwned, amt_element) => {
           Notiflix.Notify.success("Transaction Sent!");
         })
         .on("confirmed", async (receipt) => {
+          console.log("confirmed !!");
           await contract.methods
             .ownerOf(landOwned.token_id)
             .call()
             .then((res) => {
-              console.log(res);
+              console.log("that's res:", res);
               save(landOwned.coordinates).then(() => {
                 Notiflix.Notify.success(
                   "Transaction Confirmed! Check your OpenSea profile!"
