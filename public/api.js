@@ -1,26 +1,5 @@
 let companies = [];
 let coordinates = {};
-let requests;
-/**
- * @description adding data directly (requires auth)
- */
-export async function add(formData) {
-  console.log(formData);
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ", " + pair[1]);
-  }
-  const res = await fetch(`/api/add`, {
-    method: "POST",
-    headers: {
-      accept: "application/json;",
-    },
-    body: formData,
-  });
-  let dataa = await res.json();
-  if (dataa.success) {
-    window.location.reload();
-  }
-}
 
 export async function save(data) {
   const res = await fetch(`/api/save?data=${JSON.stringify(data)}`, {
@@ -93,10 +72,4 @@ function loadData() {
     });
   }
   console.log(coordinates);
-}
-
-function logout(e) {
-  e.preventDefault();
-  document.cookie = `token=${null}`;
-  window.location.reload();
 }

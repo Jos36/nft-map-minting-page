@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const Companies = require("../models/Companies");
-const Users = require("../models/Users");
 const uploadFile = require("../middleware/fileUpload");
 const user = require("../credentials.json");
 const bcryptjs = require("bcryptjs");

@@ -9,109 +9,8 @@ function grid() {
   const factor = 100;
   let isLoading = true;
   let data = null;
-  let ownedLands;
   let selectedCategory = "ALL";
-  let minted = [
-    [0, 0],
-    [21, -12],
-  ];
-
-  function openNav(key) {
-    let indicators = document.getElementById("indicators");
-    let location = document.getElementById("com_location");
-    let name = document.getElementById("com_name");
-    let desc = document.getElementById("com_description");
-    let slides = document.getElementById("slides");
-    let links = document.getElementById("com_links");
-    let loader = document.getElementById("loader");
-    let landInfo = document.getElementById("landInfo");
-
-    //  open navbar
-    document.getElementById("myNav").style.width = "30%";
-
-    //  fetch info from the database for a specific land
-
-    if (key.state) {
-      if (isLoading) {
-        landInfo.classList.add("hidden");
-      } else {
-        loader.classList.add("hidden");
-        const lands = key.state[`${key.x},${key.y}`];
-        document.getElementById("lands-list").innerHTML = lands
-          .map(
-            (
-              land
-            ) => `<div class="m-0 mt-2 blockquote" style="color: greenyellow; min-width:100px;">
-          <i class="fa-solid fa-location-dot text-danger"></i>
-          <small id="com_location">${land.x},${land.y}</small>
-        </div>`
-          )
-          .join("");
-      }
-    }
-
-    if (key) {
-      if (isLoading) {
-        landInfo.classList.add("hidden");
-      } else {
-        const landInfo = data[`${key.x},${key.y}`];
-        if (landInfo) {
-          loader.classList.add("hidden");
-          location.textContent = `${key.x},${key.y}`;
-
-          name.textContent = landInfo.name ? landInfo.name : "MetaBitz";
-          desc.innerHTML = ` <p>${
-            landInfo.description
-              ? landInfo.description
-              : ` <p> The Metabitz is a community-driven platform where investors can monetize assets, build experiences, networking, business, and negotiation through the cannabis market on the blockchain.</p>
-            <p>The Metabitz metaverse compromises to build a MAP made up of 142.000 M2bitz. M2bitz owners can host content and events, stake CBZTOKEN to earn and customize assets, monetize assets and experiences, vote in the metaverse governance, do business, network, and more, everything connected with cannabis marketing. Also, you can trade your M2bitz ownership to get a profit with the valorization in that movement, that is going to the new digital future. Visit our project</p>`
-          }</p>`;
-          if (landInfo.links[0]) {
-            links.innerHTML = ` <a href='${landInfo.links[0]}'>${landInfo.links[0]}</a>`;
-          }
-          slides.innerHTML = `<div class="carousel-item active"><img src=${
-            landInfo.images[0] ? landInfo.images[0] : "/assets/logo.png"
-          } width="250px" height="250px" class="d-inline-block " alt=""></div>
-                            <div class="carousel-item "><img src=${
-                              landInfo.images[1]
-                                ? landInfo.images[1]
-                                : "/assets/logo.png"
-                            } width="250px" height="250px" class="d-inline-block" alt=""></div>
-                            <div class="carousel-item "><img src=${
-                              landInfo.images[2]
-                                ? landInfo.images[2]
-                                : "/assets/logo.png"
-                            } width="250px" height="250px" class="d-inline-block" alt=""></div>`;
-
-          indicators.innerHTML = `<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="" aria-current="true" aria-label="Slide 1"></button>`;
-          video.src = landInfo.videos[0]
-            ? landInfo.videos[0]
-            : "/assets/video.mp4";
-          video.play();
-        } else {
-          loader.classList.add("hidden");
-          location.textContent = `${key.x},${key.y}`;
-
-          name.textContent = "MetaBitz";
-          desc.innerHTML = ` <p> The Metabitz is a community-driven platform where investors can monetize assets, build experiences, networking, business, and negotiation through the cannabis market on the blockchain.</p>
-                    <p>The Metabitz metaverse compromises to build a MAP made up of 142.000 M2bitz. M2bitz owners can host content and events, stake CBZTOKEN to earn and customize assets, monetize assets and experiences, vote in the metaverse governance, do business, network, and more, everything connected with cannabis marketing. Also, you can trade your M2bitz ownership to get a profit with the valorization in that movement, that is going to the new digital future. Visit our project</p>`;
-
-          slides.innerHTML = `<div class="carousel-item active"><img src="./assets/logo.png" width="250px" height="250px" class="d-inline-block " alt=""></div>
-                            <div class="carousel-item "><img src="./assets/logo.png" width="250px" height="250px" class="d-inline-block" alt=""></div>
-                            <div class="carousel-item "><img src="./assets/logo.png" width="250px" height="250px" class="d-inline-block" alt=""></div>`;
-
-          indicators.innerHTML = `<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" class="" aria-current="true" aria-label="Slide 1"></button>
-                                <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" class="" aria-current="true" aria-label="Slide 1"></button>`;
-          video.src = "/assets/video.mp4";
-          video.play();
-          return;
-        }
-      }
-    }
-  }
+  let minted = [];
 
   function handleZoom(e) {
     d3.select("svg#mapSvg > g").attr("transform", e.transform);
@@ -171,23 +70,12 @@ function grid() {
     d3.selectAll("rect.square6").style("stroke", "#fff");
   };
 
-  const addModal = new bootstrap.Modal(document.getElementById("addModal"), {
-    keyboard: false,
-  });
-
   const clickLand = function (e, x, y, rects) {
     e.preventDefault();
     e.stopPropagation();
-    const token_id = CoordToLandsId[`${x},${y}`];
 
     if (selectedCategory == "1" || selectedCategory == "ALL") {
       var mousePos = e.target.__data__;
-
-      // openNav({
-      //   x: mousePos.x / factor,
-      //   y: mousePos.y / factor,
-      //   empty: true,
-      // });
 
       jQuery("#view-lands-button").hide();
 
@@ -199,16 +87,19 @@ function grid() {
               ._groups[0][0]
       ).style("fill", "#FF69B4");
 
+      const token_id = CoordToLandsId[`${x},${y}`];
       getMetadata(token_id)
         .then((data) => {
           const landInfo = document.getElementById("landInfo");
-          landInfo.innerHTML = `<div style="margin-left:50px;"><p>Coordinates: (${x}, ${y})</p> <div style="display:flex"><p style="margin-right: 10px;">name: </p><p>${data.name}</p></div> <button id="mint-btn" style="
+          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
         border-radius: 10px;
         background-color: #21fe91;
         color: #23292f;
         border: none;
-        padding-left: 15px;
-        padding-right: 15px;
+        padding :10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight:bold;
         ">Mint</button></div>`;
         })
         .then(() => {
@@ -231,7 +122,6 @@ function grid() {
       selectedCategory == "ALL"
     ) {
       jQuery("#view-lands-button").show();
-      isLoggedIn();
 
       resetSelections();
       d3.select(
@@ -240,15 +130,29 @@ function grid() {
           : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
       ).style("stroke", "#FF69B4");
 
-      const landInfo = document.getElementById("landInfo");
-      landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <button id="mint-btn" style="
-      border-radius: 10px;
-      background-color: #21fe91;
-      color: #23292f;
-      border: none;
-      padding-left: 15px;
-      padding-right: 15px;
-    ">Mintr</button></div>`;
+      const token_id = CoordToLandsId[`${x},${y}`];
+      getMetadata(token_id)
+        .then((data) => {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+        border-radius: 10px;
+        background-color: #21fe91;
+        color: #23292f;
+        border: none;
+        padding :10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight:bold;
+        ">Mint</button></div>`;
+        })
+        .then(() => {
+          console.log(CoordToLandsId[`${x},${y}`]);
+          const mintBtn = document.getElementById("mint-btn");
+          mint(mintBtn, {
+            token_id,
+            coordinates: [x, y],
+          });
+        });
     } else if (
       (selectedCategory == "12" && state[`${x},${y}`].length == 144) ||
       selectedCategory == "ALL"
@@ -263,15 +167,29 @@ function grid() {
           : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
       ).style("stroke", "#FF69B4");
 
-      const landInfo = document.getElementById("landInfo");
-      landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <button id="mint-btn" style="
-      border-radius: 10px;
-      background-color: #21fe91;
-      color: #23292f;
-      border: none;
-      padding-left: 15px;
-      padding-right: 15px;
-    ">Mint</button></div>`;
+      const token_id = CoordToLandsId[`${x},${y}`];
+      getMetadata(token_id)
+        .then((data) => {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+        border-radius: 10px;
+        background-color: #21fe91;
+        color: #23292f;
+        border: none;
+        padding :10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight:bold;
+        ">Mint</button></div>`;
+        })
+        .then(() => {
+          console.log(CoordToLandsId[`${x},${y}`]);
+          const mintBtn = document.getElementById("mint-btn");
+          mint(mintBtn, {
+            token_id,
+            coordinates: [x, y],
+          });
+        });
     } else if (
       (selectedCategory == "6" && state[`${x},${y}`].length == 36) ||
       selectedCategory == "ALL"
@@ -286,15 +204,29 @@ function grid() {
           : rects.filter((d, i) => d[0] === x && d[1] === y)._groups[0][0]
       ).style("stroke", "#FF69B4");
 
-      const landInfo = document.getElementById("landInfo");
-      landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <button id="mint-btn" style="
-      border-radius: 10px;
-      background-color: #21fe91;
-      color: #23292f;
-      border: none;
-      padding-left: 15px;
-      padding-right: 15px;
-    ">Mint</button></div>`;
+      const token_id = CoordToLandsId[`${x},${y}`];
+      getMetadata(token_id)
+        .then((data) => {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `<div style="margin-left:50px; margin-top:100px"><p style="font-weight:bold;">Coordinates: (${x}, ${y})</p> <img style="width:300px; height:300px; border-radius:10px; border: #21fe91 1px solid; margin-bottom: 20px" src="${data.image}" alt="" /> <div style="display:flex"><p style="font-weight:bold;margin-right: 10px;">name: </p><p style="color:white">${data.name}</p></div> <div><p style="font-weight:bold;">description</p><p style="color:white">${data.description}</p></div> <button id="mint-btn" style="
+        border-radius: 10px;
+        background-color: #21fe91;
+        color: #23292f;
+        border: none;
+        padding :10px;
+        padding-left: 20px;
+        padding-right: 20px;
+        font-weight:bold;
+        ">Mint</button></div>`;
+        })
+        .then(() => {
+          console.log(CoordToLandsId[`${x},${y}`]);
+          const mintBtn = document.getElementById("mint-btn");
+          mint(mintBtn, {
+            token_id,
+            coordinates: [x, y],
+          });
+        });
     }
   };
 
@@ -564,11 +496,12 @@ function grid() {
         if (isGridDrawn) {
           console.log("wallet connection verified");
         } else {
+          document.getElementById("main").classList.remove("hidden");
+          document.getElementById("clientLoader").classList.add("hidden");
           drawGrid();
           reset();
           fetchData();
         }
-        document.getElementById("clientLoader").classList.add("hidden");
       } else {
         window.location.replace("/");
       }
