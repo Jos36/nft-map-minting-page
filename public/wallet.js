@@ -228,6 +228,7 @@ export let mint = async (element, landOwned, amt_element) => {
             .ownerOf(landOwned.token_id)
             .call()
             .then((res) => {
+              console.log(res);
               save(landOwned.coordinates).then(() => {
                 Notiflix.Notify.success(
                   "Transaction Confirmed! Check your OpenSea profile!"
