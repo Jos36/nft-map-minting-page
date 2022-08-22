@@ -223,7 +223,7 @@ export let mint = async (element, landOwned, amt_element) => {
         .on("transactionHash", (hash) => {
           Notiflix.Notify.success("Transaction Sent!");
         })
-        .on("confirmed", async (receipt) => {
+        .on("confirmation", async (receipt) => {
           console.log("confirmed !!");
           await contract.methods
             .ownerOf(landOwned.token_id)
