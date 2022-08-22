@@ -224,20 +224,20 @@ export let mint = async (element, landOwned, amt_element) => {
           Notiflix.Notify.success("Transaction Sent!");
         })
         .on("confirmed", async (receipt) => {
-          try {
-            let res = await contract.methods.ownerOf(landOwned.token_id).call();
-          } catch (e) {
-            return;
-          }
-          if (res) {
-            //the nft is well minted and can be marked as owned...
-            save(landOwned.coordinates).then(() => {
-              window.location.reload();
+          await contract.methods
+            .ownerOf(landOwned.token_id)
+            .call()
+            .then((res) => {
+              save(landOwned.coordinates).then(() => {
+                Notiflix.Notify.success(
+                  "Transaction Confirmed! Check your OpenSea profile!"
+                );
+                window.location.reload();
+              });
+            })
+            .catch((e) => {
+              console.log(e);
             });
-          }
-          Notiflix.Notify.success(
-            "Transaction Confirmed! Check your OpenSea profile!"
-          );
         })
         .on("error", (error, receipt) => {
           Notiflix.Notify.failure(error.message);
