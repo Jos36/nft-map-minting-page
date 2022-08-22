@@ -1,6 +1,7 @@
 /** @format */
-import { get, request } from "./api.js ";
-import { verifyWalletConnection, verifyWalletLands } from "./wallet.js";
+import { getMintedLands, getMetadata } from "./api.js ";
+import { verifyWalletConnection, verifyWalletLands, mint } from "./wallet.js";
+import { CoordToLandsId } from "./CoordToLandsId.js";
 
 function grid() {
   let isGridDrawn = false;
@@ -177,8 +178,8 @@ function grid() {
   const clickLand = function (e, x, y, rects) {
     e.preventDefault();
     e.stopPropagation();
+    const token_id = CoordToLandsId[`${x},${y}`];
 
-    // if()
     if (selectedCategory == "1" || selectedCategory == "ALL") {
       var mousePos = e.target.__data__;
 
@@ -198,15 +199,26 @@ function grid() {
               ._groups[0][0]
       ).style("fill", "#FF69B4");
 
-      const landInfo = document.getElementById("landInfo");
-      landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <button id="mint-btn" style="
-      border-radius: 10px;
-      background-color: #21fe91;
-      color: #23292f;
-      border: none;
-      padding-left: 15px;
-      padding-right: 15px;
-    ">Mint</button></div>`;
+      getMetadata(token_id)
+        .then((data) => {
+          const landInfo = document.getElementById("landInfo");
+          landInfo.innerHTML = `<div><p>x:${x}</p><p>y:${y}</p> <div style="display:flex"><p>name: </p><p>${data.name}</p></div> <button id="mint-btn" style="
+        border-radius: 10px;
+        background-color: #21fe91;
+        color: #23292f;
+        border: none;
+        padding-left: 15px;
+        padding-right: 15px;
+        ">Mint</button></div>`;
+        })
+        .then(() => {
+          console.log(CoordToLandsId[`${x},${y}`]);
+          const mintBtn = document.getElementById("mint-btn");
+          mint(mintBtn, {
+            token_id,
+            coordinates: [x, y],
+          });
+        });
     }
   };
 
@@ -478,56 +490,69 @@ function grid() {
 
   function fetchData() {
     // minted lands
-
     const getminted = () => {
-      console.log(minted);
-      const grid = d3.select("svg#mapSvg");
+      getMintedLands()
+        .then((data) => {
+          minted = data;
+        })
+        .then(() => {
+          console.log(minted);
+          const grid = d3.select("svg#mapSvg");
 
-      minted.forEach((mintedland) => {
-        const land = d3.selectAll(
-          `rect[x='${mintedland[0] * 100}'][y='${mintedland[1] * 100}']`
-        );
+          minted.forEach((mintedland) => {
+            const land = d3.selectAll(
+              `rect[x='${mintedland[0] * 100}'][y='${mintedland[1] * 100}']`
+            );
 
-        const logo = "/assets/gray.png";
-        const group1 = grid
-          .select("g")
-          .selectAll(".square")
-          .filter((d, i) => {
-            return d.x === mintedland[0] * 100 && d.y === mintedland[1] * 100;
+            const logo = "/assets/gray.png";
+            const group1 = grid
+              .select("g")
+              .selectAll(".square")
+              .filter((d, i) => {
+                return (
+                  d.x === mintedland[0] * 100 && d.y === mintedland[1] * 100
+                );
+              });
+
+            const group12 = grid
+              .select("g")
+              .selectAll(".square12")
+              .filter(
+                (d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]
+              );
+            group12.attr("xlink:href", logo);
+            group12.style("fill", "none");
+
+            // if the image on 24x24 tile
+
+            const group24 = grid
+              .select("g")
+              .selectAll(".square24")
+              .filter(
+                (d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]
+              );
+            group24.attr("xlink:href", logo);
+            group24.style("fill", "none");
+
+            // if the image on 6x6 tile
+
+            const group6 = grid
+              .select("g")
+              .selectAll(".square6")
+              .filter(
+                (d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]
+              );
+            group6.attr("xlink:href", logo);
+            group6.style("fill", "none");
+
+            group1.attr("xlink:href", "/assets/gray.png");
+            group1.style("fill", "none");
+
+            d3.select(land._groups[0][0]).attr("xlink:href", "/images/12.png");
+            d3.select(land._groups[0][1]).attr("xlink:href", "/images/12.png");
+            d3.select(land._groups[0][1]).attr("xlink:href", "/images/12.png");
           });
-
-        const group12 = grid
-          .select("g")
-          .selectAll(".square12")
-          .filter((d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]);
-        group12.attr("xlink:href", logo);
-        group12.style("fill", "none");
-
-        // if the image on 24x24 tile
-
-        const group24 = grid
-          .select("g")
-          .selectAll(".square24")
-          .filter((d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]);
-        group24.attr("xlink:href", logo);
-        group24.style("fill", "none");
-
-        // if the image on 6x6 tile
-
-        const group6 = grid
-          .select("g")
-          .selectAll(".square6")
-          .filter((d, i) => d[0] === mintedland[0] && d[1] === mintedland[1]);
-        group6.attr("xlink:href", logo);
-        group6.style("fill", "none");
-
-        group1.attr("xlink:href", "/assets/gray.png");
-        group1.style("fill", "none");
-
-        d3.select(land._groups[0][0]).attr("xlink:href", "/images/12.png");
-        d3.select(land._groups[0][1]).attr("xlink:href", "/images/12.png");
-        d3.select(land._groups[0][1]).attr("xlink:href", "/images/12.png");
-      });
+        });
     };
     getminted();
   }
@@ -553,24 +578,6 @@ function grid() {
   // check wallet connection
 
   isLoggedIn();
-
-  // onsubmit form logic
-  const form = document.getElementById("add-form");
-  document.getElementById("add-form").addEventListener("submit", (e) => {
-    e.preventDefault();
-    let data = [...e.currentTarget.elements]
-      .filter((ele) => ele.type !== "submit")
-      .map((ele) => {
-        return {
-          [ele.getAttribute("name")]:
-            ele.type === "file" ? ele.files : ele.value,
-        };
-      });
-    let formData = new FormData(form);
-    formData.set("coordinateX", data[0].coordinateX);
-    formData.set("coordinateY", data[1].coordinateY);
-    request(formData);
-  });
 
   // select category
 

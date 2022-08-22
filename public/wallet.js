@@ -2,7 +2,7 @@
 import { abi } from "/abi.js";
 import { config } from "/config.js";
 import { landsIdToCoord } from "./landsIdToCoord.js";
-
+import { save } from "./api.js";
 const Web3Modal = window.Web3Modal.default;
 
 Notiflix.Notify.init({
@@ -182,6 +182,69 @@ async function getNFTs(address) {
     console.log("Moralis error");
   }
 }
+
+let getIsMintActive = async () => {
+  if (!contract) return;
+  let res;
+  try {
+    res = await contract.methods.paused().call();
+    return res;
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export let mint = async (element, landOwned, amt_element) => {
+  element.addEventListener("click", async () => {
+    let isMintActive = await getIsMintActive();
+    let price;
+    if (isMintActive) {
+      //console.log(isMintActive)
+      Notiflix.Notify.failure("Mint is not active yet!");
+      return;
+    } else {
+      if (landOwned.token_id <= 9210) {
+        price = config.contract.one_mint_price;
+      } else if (landOwned.token_id <= 9238) {
+        price = config.contract.six_mint_price;
+      } else if (landOwned.token_id <= 9252) {
+        price = config.contract.twelve_mint_price;
+      } else {
+        price = config.contract.twentyfour_mint_price;
+      }
+      await contract.methods[config.contract.mint_function](
+        accountData.account,
+        landOwned.token_id
+      )
+        .send({
+          from: accountData.account,
+          value: price,
+        })
+        .on("transactionHash", (hash) => {
+          Notiflix.Notify.success("Transaction Sent!");
+        })
+        .on("confirmed", async (receipt) => {
+          try {
+            let res = await contract.methods.ownerOf(landOwned.token_id).call();
+          } catch (e) {
+            return;
+          }
+          if (res) {
+            //the nft is well minted and can be marked as owned...
+            save(landOwned.coordinates).then(() => {
+              window.location.reload();
+            });
+          }
+          Notiflix.Notify.success(
+            "Transaction Confirmed! Check your OpenSea profile!"
+          );
+        })
+        .on("error", (error, receipt) => {
+          Notiflix.Notify.failure(error.message);
+        });
+    }
+  });
+};
 
 export async function verifyWalletLands() {
   let landsById;

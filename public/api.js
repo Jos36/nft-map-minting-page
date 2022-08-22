@@ -22,65 +22,8 @@ export async function add(formData) {
   }
 }
 
-export async function addUser(formData) {
-  console.log(formData);
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ", " + pair[1]);
-  }
-  const res = await fetch(`/api/addUser`, {
-    method: "POST",
-    headers: {
-      accept: "application/json;",
-    },
-    body: formData,
-  });
-  let dataa = await res.json();
-  if (dataa.success) {
-    window.location.reload();
-  }
-}
-
-export async function modifiyUser(formData) {
-  console.log(formData);
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ", " + pair[1]);
-  }
-  const res = await fetch(`/api/modifiyUser`, {
-    method: "POST",
-    headers: {
-      accept: "application/json;",
-    },
-    body: formData,
-  });
-  let dataa = await res.json();
-  if (dataa.success) {
-    window.location.reload();
-  }
-}
-
-/**
- * @description requesting data change (requires wallet connection)
- */
-export async function request(formData) {
-  console.log(formData);
-  for (var pair of formData.entries()) {
-    console.log(pair[0] + ", " + pair[1]);
-  }
-  const res = await fetch(`/api/request`, {
-    method: "POST",
-    headers: {
-      accept: "application/json;",
-    },
-    body: formData,
-  });
-  let data = await res.json();
-  if (data.success) {
-    window.location.reload();
-  }
-}
-
-export async function getRequests(context) {
-  const res = await fetch(`/api/getRequests`, {
+export async function save(data) {
+  const res = await fetch(`/api/save?data=${JSON.stringify(data)}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -88,13 +31,14 @@ export async function getRequests(context) {
     },
   });
 
-  let data = await res.json();
-  requests = data.requests;
-  return requests;
+  let resData = await res.json();
+  console.log(resData);
+  console.log(JSON.parse(resData.savedData));
+  return resData;
 }
 
-export async function checkUser(wallet) {
-  const res = await fetch(`/api/checkUser?wallet=${wallet}`, {
+export async function getMetadata(token_id) {
+  const res = await fetch(`/api/getMetadata?token_id=${token_id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -102,12 +46,15 @@ export async function checkUser(wallet) {
     },
   });
 
-  let data = await res.json();
-  console.log(data);
-  return data.user;
+  let resData = await res.json();
+  console.log(resData);
+  console.log(JSON.parse(resData.data));
+  const data = JSON.parse(resData.data);
+  return data;
 }
-export async function getUsers() {
-  const res = await fetch(`/api/getUsers`, {
+
+export async function getMintedLands() {
+  const res = await fetch(`/api/getMinted`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -115,23 +62,11 @@ export async function getUsers() {
     },
   });
 
-  let data = await res.json();
-  console.log(data);
-  return data.users;
-}
-
-export async function getCompanies() {
-  const res = await fetch(`/api/getCompanies`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json; charset=utf-8;",
-    },
-  });
-
-  let data = await res.json();
-
-  return data.com;
+  let resData = await res.json();
+  console.log(resData);
+  console.log(JSON.parse(resData.data));
+  const data = JSON.parse(resData.data);
+  return data;
 }
 
 export async function get(context) {
