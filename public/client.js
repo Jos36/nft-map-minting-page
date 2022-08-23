@@ -772,20 +772,16 @@ async function grid() {
         if (isGridDrawn) {
           console.log("wallet connection verified");
         } else {
-          document.getElementById("main").classList.remove("hidden");
-          document.getElementById("clientLoader").classList.add("hidden");
-          drawGrid();
-          reset();
-          fetchData();
         }
       } else {
-        document.getElementById("main").classList.remove("hidden");
-        document.getElementById("clientLoader").classList.add("hidden");
-        drawGrid();
-        reset();
-        fetchData();
+        window.location.replace("/");
       }
     });
+    document.getElementById("main").classList.remove("hidden");
+    document.getElementById("clientLoader").classList.add("hidden");
+    drawGrid();
+    reset();
+    fetchData();
   }
 
   // check wallet connection
