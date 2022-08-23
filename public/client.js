@@ -766,17 +766,20 @@ async function grid() {
   }
 
   function isLoggedIn() {
-    verifyWalletConnection().then((data) => {
-      if (data) {
-        // draw grid for the first time
-        if (isGridDrawn) {
-          console.log("wallet connection verified");
+    const { ethereum } = window;
+    if (Boolean(ethereum && ethereum.isMetaMask)) {
+      verifyWalletConnection().then((data) => {
+        if (data) {
+          // draw grid for the first time
+          if (isGridDrawn) {
+            console.log("wallet connection verified");
+          } else {
+          }
         } else {
+          // window.location.replace("/");
         }
-      } else {
-        // window.location.replace("/");
-      }
-    });
+      });
+    }
     document.getElementById("main").classList.remove("hidden");
     document.getElementById("clientLoader").classList.add("hidden");
     drawGrid();
