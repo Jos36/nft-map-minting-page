@@ -779,7 +779,11 @@ async function grid() {
           fetchData();
         }
       } else {
-        window.location.replace("/");
+        document.getElementById("main").classList.remove("hidden");
+        document.getElementById("clientLoader").classList.add("hidden");
+        drawGrid();
+        reset();
+        fetchData();
       }
     });
   }
