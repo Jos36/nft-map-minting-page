@@ -48,9 +48,10 @@ let verifySetup = async () => {
   }
 };
 
-let total_amt;
+let total_amt = 9260;
 let getTotalSupplyInterval = async () => {
   if (!contract) return;
+  supplyElement = document.getElementById("supplyElement");
   let res;
   try {
     res = await contract.methods.totalSupply().call();
@@ -61,7 +62,7 @@ let getTotalSupplyInterval = async () => {
     console.log("total supply", res);
     if (supplyElement) {
       if (total_amt) {
-        supplyElement.innerText = `${res} / 10000 Minted`;
+        supplyElement.innerText = `${res} / 9260 Minted`;
       } else {
         supplyElement.innerText = `${res} Minted`;
       }
