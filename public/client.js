@@ -774,7 +774,7 @@ async function grid() {
         } else {
         }
       } else {
-        window.location.replace("/");
+        // window.location.replace("/");
       }
     });
     document.getElementById("main").classList.remove("hidden");
