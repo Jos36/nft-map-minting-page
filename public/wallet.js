@@ -97,7 +97,6 @@ let connectWallet = async () => {
     console.log(accountData);
   });
   Notiflix.Notify.success("Connected Wallet");
-  window.location.replace("/client");
 };
 
 const contractAddress = "0xAddressOfNFTContract";
