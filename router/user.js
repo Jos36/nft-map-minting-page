@@ -6,6 +6,7 @@ const bcryptjs = require("bcryptjs");
 const jsonwebtoken = require("jsonwebtoken");
 const axios = require("axios");
 const fs = require("fs");
+const Companies = require("../models/Companies");
 
 router.get("/save", async (req, res) => {
   const reqData = req.query.data;
@@ -70,6 +71,13 @@ router.post("/login", async (req, res) => {
     }
   }
   return res.redirect("/login?login=false");
+});
+
+router.get("/get", async (req, res) => {
+  const com = await Companies.find({});
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Credentials", true);
+  res.status(200).json({ com });
 });
 
 module.exports = router;
